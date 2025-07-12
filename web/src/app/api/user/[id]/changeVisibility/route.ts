@@ -18,8 +18,6 @@ export async function POST(req: Request, { params }: { params: { id: string } })
     }
 
     const targetUser = await getUserById(userId);
-    console.log(targetUser?.email)
-    console.log(session.user.email)
     if (!targetUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
