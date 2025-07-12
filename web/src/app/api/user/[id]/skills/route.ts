@@ -4,14 +4,14 @@ import {auth} from '../../../../../../auth'
 import { NextResponse } from "next/server";
 
 // GET /api/user/[id]/skills
-export async function GET(_: Request, { params }: { params: { id: string } }) {
+export async function GET(_: Request,   { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await auth();
     if (!session || !session.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const id = params.id;
+    const { id } = await params;
     const targetUser = await getUserById(id);
     if (!targetUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
