@@ -19,6 +19,8 @@ export async function GET(req: NextRequest) {
     }
 
     const { searchParams } = new URL(req.url);
+
+    
     const limit = parseInt(searchParams.get("limit") || "10");
     const offset = parseInt(searchParams.get("offset") || "0");
 
@@ -38,7 +40,10 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(notifications);
+    // return NextResponse.json(notifications);
+    return NextResponse.json({ notifications });
+    
+
   } catch (error) {
     console.error("GET /api/notification error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
