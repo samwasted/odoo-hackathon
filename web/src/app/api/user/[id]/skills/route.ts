@@ -37,15 +37,16 @@ export async function GET(_: Request,   { params }: { params: Promise<{ id: stri
   }
 }
 
-// POST /api/user/[id]/skills
-export async function POST(req: Request, { params }: { params: { id: string } }) {
+// POST /api/user/[id]/skills - FIXED VERSION
+export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await auth();
     if (!session || !session.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const id = params.id;
+    // ✅ Await the params Promise before accessing properties
+    const { id } = await params;
     const body = await req.json();
     const { skillsOffered, skillsWanted } = body;
 
