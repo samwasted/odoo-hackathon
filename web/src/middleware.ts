@@ -1,40 +1,46 @@
-import NextAuth from "next-auth"
-
-import authConfig from "../auth.config"
-
+import NextAuth from "next-auth";
+import authConfig from "../auth.config";
 import {
   DEFAULT_LOGIN_REDIRECT,
   authRoutes,
   publicRoutes,
   apiAuthPrefix
-} from '../routes'
+} from "../routes";
 
-const {auth} = NextAuth(authConfig)
+const { auth } = NextAuth(authConfig);
+
 export default auth((req) => {
-  const {nextUrl} = req
-  const isLoggedIn = !!req.auth
-  const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
-  const isAuthRoute = authRoutes.includes(nextUrl.pathname)
+  const { nextUrl, method } = req;
+  const pathname = nextUrl.pathname;
+  const isLoggedIn = !!req.auth;
 
-  if(isApiAuthRoute){
-    return null
+  const isApiAuthRoute = pathname.startsWith(apiAuthPrefix);
+  const isPublicRoute = publicRoutes.includes(pathname);
+  const isAuthRoute = authRoutes.includes(pathname);
+
+  // Allow GET /api/user/[id] as public
+  const isPublicUserGet = method === "GET" && /^\/api\/user\/[^\/]+$/.test(pathname);
+
+  if (isApiAuthRoute || isPublicUserGet || isPublicRoute) {
+    return null;
   }
-  if(isAuthRoute){
-    if(isLoggedIn){
-      return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, req.nextUrl))
+
+  if (isAuthRoute) {
+    if (isLoggedIn) {
+      return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     }
-    return null
+    return null;
   }
-  if(!isLoggedIn && !isPublicRoute){
-    return Response.redirect(new URL('/auth/login', nextUrl))
-  }
-  return null
-})
 
-// invoke middleware on some paths, put in matcher
+  if (!isLoggedIn) {
+    return Response.redirect(new URL("/auth/login", nextUrl));
+  }
+
+  return null;
+});
+
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico|css|js)$).*)',
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico|css|js)$).*)",
   ],
-}
+};

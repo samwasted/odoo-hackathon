@@ -2,9 +2,9 @@ import { getUserById } from "@/data/user";
 import { auth } from "../../../../../auth";
 import { NextResponse } from "next/server";
 
-export async function GET(_: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, context: { params: { id: string } }) {
   try {
-    const userId = params.id;
+    const { id: userId } = context.params;
 
     if (!userId) {
       return NextResponse.json({ error: "Missing user ID" }, { status: 400 });

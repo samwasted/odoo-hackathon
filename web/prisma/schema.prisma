@@ -14,25 +14,30 @@ datasource db {
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
-enum UserRole{
+
+enum UserRole {
   ADMIN
   USER
 }
+
 model User {
-  id String @id @default(cuid())
-  name String?
-  email String? @unique
-  emailVerified DateTime?
-  image String?
-  password  String?
-  role UserRole @default(USER)
-  accounts  Account[]
-  skillsWanted   Skill[]
-  skillsOffered  Skill[]
-  availability   Availability?
-  isPublic  Boolean @default(true)
+  id                    String         @id @default(cuid())
+  name                  String?
+  email                 String?        @unique
+  emailVerified         DateTime?
+  image                 String?
+  password              String?
+  role                  UserRole       @default(USER)
+  accounts              Account[]
+  skillsWanted          Skill[]
+  skillsOffered         Skill[]
+  availability          Availability?
+  isPublic              Boolean        @default(true)
+  sentNotifications     Notification[] @relation("SentNotifications")
+  receivedNotifications Notification[] @relation("ReceivedNotifications")
 }
-enum Skill { //TODO: IMPROVE IT LATER
+
+enum Skill {
   PROGRAMMING
   DESIGN
   WRITING
@@ -49,38 +54,52 @@ enum Availability {
   WEEKENDS
   ALL_WEEK
 }
-model Account{
-  id String @id @default(cuid())
-  userId  String
-  type  String
-  provider String
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
   providerAccountId String
-  refresh_token String? @db.Text
-  access_token String @db.Text
-  expires_at Int?
-  token_type String?
-  scope String?
-  id_token String? @db.Text
-  session_state String?
+  refresh_token     String? @db.Text
+  access_token      String  @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
-model VerificationToken{
-  id String @id @default(cuid())
-  email String
-  token String @unique
+
+model VerificationToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
   expires DateTime
 
   @@unique([email, token])
 }
 
 model PasswordResetToken {
-  id String @id @default(cuid())
-  email String
-  token String @unique
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
   expires DateTime
 
   @@unique([email, token])
+}
+
+model Notification {
+  id         String   @id @default(cuid())
+  senderId   String
+  receiverId String
+  message    String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  sender   User @relation("SentNotifications", fields: [senderId], references: [id])
+  receiver User @relation("ReceivedNotifications", fields: [receiverId], references: [id])
 }
