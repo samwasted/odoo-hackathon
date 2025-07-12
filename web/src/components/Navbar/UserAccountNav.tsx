@@ -50,11 +50,13 @@ const UserAccountNav = ({
                 <Icons.user className='h-4 w-4 text-zinc-900' />
               </AvatarFallback>
             )}
+             
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className='bg-white' align='end'>
+        <Link href="/profile" className="no-underline">
         <div className='flex items-center justify-start gap-2 p-2'>
           <div className='flex flex-col space-y-0.5 leading-none'>
             {name && (
@@ -69,6 +71,7 @@ const UserAccountNav = ({
             )}
           </div>
         </div>
+        </Link>
 
         <DropdownMenuSeparator />
 
