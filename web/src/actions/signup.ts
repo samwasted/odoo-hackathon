@@ -17,6 +17,8 @@ export const signup = async (values : z.infer<typeof SignupSchema>) =>{
     const {name, password, email} = validatedFields
 
     const hashedPassword = await bcrypt.hash(password, 10)
+    const test = await bcrypt.hash("testing", 10)
+    console.log(test)
 
     const existingUser = await getUserByEmail(email)
     if(existingUser){

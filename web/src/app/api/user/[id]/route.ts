@@ -4,7 +4,8 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request, context: { params: { id: string } }) {
   try {
-    const { id: userId } = context.params;
+    const userId = context.params?.id
+    
 
     if (!userId) {
       return NextResponse.json({ error: "Missing user ID" }, { status: 400 });

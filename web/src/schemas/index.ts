@@ -49,3 +49,14 @@ export const UserSchema = z.object({
   skillsOffered: z.array(SkillEnum).default([]),
   availability: AvailabilityEnum.optional(),
 });
+export enum Skill {
+  "PROGRAMMING",
+  "DESIGN",
+  "WRITING",
+  "MARKETING",
+  "MUSIC",
+  "COOKING",
+  "PUBLIC_SPEAKING",
+  "VIDEO_EDITING",
+  "DATA_ANALYSIS",
+}

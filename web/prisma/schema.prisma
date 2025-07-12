@@ -99,6 +99,8 @@ model Notification {
   message    String
   isRead     Boolean  @default(false)
   createdAt  DateTime @default(now())
+  skillsOffered String[]
+  skillsWanted  String[] 
 
   sender   User @relation("SentNotifications", fields: [senderId], references: [id])
   receiver User @relation("ReceivedNotifications", fields: [receiverId], references: [id])
